@@ -436,19 +436,21 @@ def venn4(labels, names=['A', 'B', 'C', 'D'], **options):
     return fig, ax
 
 
-def cli():
+def get_parser():
     import argparse
+    from textwrap import dedent
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=dedent("""
+        examples:
+          $ venn -d 123 -d 234 -nLeft -nRight
+          $ venn -d 123 -d 234 -nLeft -nRight --fill logical
+          $ venn -d 123 -d 234 -d 257 -nLeft -nCenter -nRight
+          $ venn -d 123 -d 234 -nLeft -nRight -q -o venn.png
+        """)
+    )
 
-    # parser.add_argument(
-    #     "-h",
-    #     "--help",
-    #     type=bool,
-    #     action="store",
-    #     default=False,
-    # )
-    #
     parser.add_argument(
         "-q",
         "--no-show",
@@ -467,11 +469,13 @@ def cli():
     )
 
     parser.add_argument(
+        "-f",
         "--fill",
-        type=list,
-        default=["number"],
-        help="Fill options: number, logic, percent",
+        type=str,
+        default=None,
+        action="append",
         choices=["number", "logic", "percent"],
+        help="Fill options: number, logic, percent. Use multiple options. eg. -f number -f logic",
     )
 
     parser.add_argument(
@@ -487,20 +491,28 @@ def cli():
         "--data",
         type=str,
         action="append",
-        help="Data for the Venn diagram. Use multiple times for multiple sets. eg. -d '1 2 3'",
+        help="Data for the Venn diagram. Use multiple times for multiple sets. eg. -d '123' -d '234'"
     )
 
-    return parser.parse_args()
+    return parser
 
 
-if __name__ == "__main__":
-    args = cli()
+def app():
+    parser = get_parser()
+    args = parser.parse_args()
 
     data = args.data
     fill = args.fill
     names = args.name
     out = args.output
     no_show = args.no_show
+
+    if data is None:
+        parser.print_help()
+        return
+
+    if fill is None:
+        fill = ["number"]
 
     nobjects = len(data)
     if nobjects > 4:
@@ -512,14 +524,18 @@ if __name__ == "__main__":
     )
 
     if nobjects == 2:
-        fig, ax = venn2(labels, names=names)
+        venn2(labels, names=names)
     elif nobjects == 3:
-        fig, ax = venn3(labels, names=names)
+        venn3(labels, names=names)
     elif nobjects == 4:
-        fig, ax = venn4(labels, names=names)
+        venn4(labels, names=names)
 
     if out:
         plt.savefig(out, bbox_inches='tight')
 
     if not no_show:
         plt.show()
+
+
+if __name__ == "__main__":
+    app()
