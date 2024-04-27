@@ -3,6 +3,13 @@
 2-4 Sets Venn Diagram For Python
 
 ```bash
+pipx install git+https://github.com/mmngreco/pyvenn.git
+venn
+```
+
+## Development
+
+```bash
 git clone git+https://github.com/mmngreco/pyvenn.git
 cd pyvenn
 python -m venv venv
