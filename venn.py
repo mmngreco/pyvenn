@@ -441,25 +441,37 @@ def cli():
 
     parser = argparse.ArgumentParser()
 
+    # parser.add_argument(
+    #     "-h",
+    #     "--help",
+    #     type=bool,
+    #     action="store",
+    #     default=False,
+    # )
+    #
     parser.add_argument(
         "-q",
         "--no-show",
         type=bool,
         action="store",
         default=False,
+        help="Do not show the plot.",
     )
 
     parser.add_argument(
         "-o",
         "--output",
         type=str,
-        default=None
+        default=None,
+        help="Output file path. eg. venn.png",
     )
 
     parser.add_argument(
         "--fill",
         type=list,
         default=["number"],
+        help="Fill options: number, logic, percent",
+        choices=["number", "logic", "percent"],
     )
 
     parser.add_argument(
@@ -467,6 +479,7 @@ def cli():
         "--name",
         type=str,
         action="append",
+        help="Group names, use multiple times for multiple groups. eg. -n 'A' -n 'B'",
     )
 
     parser.add_argument(
@@ -474,7 +487,9 @@ def cli():
         "--data",
         type=str,
         action="append",
+        help="Data for the Venn diagram. Use multiple times for multiple sets. eg. -d '1 2 3'",
     )
+
     return parser.parse_args()
 
 
